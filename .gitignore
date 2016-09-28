@@ -1,0 +1,116 @@
+# this one is like your scripts with argv
+def print_two(*args):
+    arg1, arg2 = args
+    print "arg1: %r, arg2: %r" % (arg1, arg2)
+
+# ok, that *args is actually pointless, we can just do this
+def print_two_again(arg1, arg2):
+    print "arg1: %r, arg2: %r" % (arg1, arg2)
+
+# this just takes one argument
+def print_one(arg1):
+    print "arg1: %r" % arg1
+
+# this one takes no arguments
+def print_none():
+    print "I got nothin'."
+
+
+print_two("Zed","Shaw")
+print_two_again("Zed","Shaw")
+print_one("First!")
+print_none()
+#------------------#
+
+http://stackoverflow.com/questions/2354329/whats-the-meaning-of-r-in-python
+
+what's the meaning of %r in the following statement?
+
+print '%r' % (1)
+I think I've heard of %s, %d, and %f but never heard of this.
+Background:
+
+In Python, there are two builtin functions for turning an object into a string: str vs. repr. str is supposed to be a friendly, human readable string. repr is supposed to include detailed information about an object's contents (sometimes, they'll return the same thing, such as for integers). By convention, if there's a Python expression that will eval to another object that's ==, repr will return such an expression e.g.
+
+>>> print repr('hi')
+'hi'  # notice the quotes here as opposed to...
+>>> print str('hi')
+hi
+If returning an expression doesn't make sense for an object, repr should return a string that's surrounded by < and > symbols e.g. <blah>.
+
+To answer your original question:
+
+%s <-> str
+%r <-> repr
+
+In addition:
+
+You can control the way an instance of your own classes convert to strings by implementing __str__ and __repr__ methods.
+
+class Foo:
+
+  def __init__(self, foo):
+    self.foo = foo
+
+  def __eq__(self, other):
+    """Implements ==."""
+    return self.foo == other.foo
+
+  def __repr__(self):
+    # if you eval the return value of this function,
+    # you'll get another Foo instance that's == to self
+    return "Foo(%r)" % self.foo
+shareimprove this answer
+edited Aug 13 '14 at 17:18
+
+Cristian Ciupitu
+9,83932945
+answered Mar 1 '10 at 8:48
+
+allyourcode
+8,983125686
+5	 	
+I've found %r to be useful for printing a string of unknown encoding, when otherwise an error can get thrown with %s – dan Aug 13 '14 at 23:06
+add a comment
+
+up vote
+15
+down vote
+It calls repr() on the object and inserts the resulting string.
+
+shareimprove this answer
+answered Mar 1 '10 at 7:15
+
+Ignacio Vazquez-Abrams
+442k62790949
+add a comment
+up vote
+4
+down vote
+It prints the replacement as a string with repr().
+
+shareimprove this answer
+answered Mar 1 '10 at 7:15
+
+Xorlev
+6,25322335
+add a comment
+up vote
+1
+down vote
+Adding to the replies given above, '%r' can be useful in a scenario where you have a list with heterogeneous data type. Let's say, we have a list = [1, 'apple' , 2 , 'r','banana'] Obviously in this case using '%d' or '%s' would cause an error. Instead, we can use '%r' to print all these values.
+
+shareimprove this answer
+answered Mar 27 '15 at 9:33
+
+Hetal Patel
+112
+  	 	
+Kindly Edit your Answer – Rajesh Mar 27 '15 at 10:13
+add a comment
+up vote
+0
+down vote
+See String Formatting Operations in the docs. Notice that %s and %d etc, might work differently to how you expect if you are used to the way they work in another language such as C.
+
+In particular, %s also works well for ints and floats unless you have special formatting requirements where %d or %f will give you more control.
